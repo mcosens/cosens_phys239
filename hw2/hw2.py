@@ -25,3 +25,23 @@ print("""PHYS239 HW2:
       \t b) {2}
       \t c) {3}
       """.format(N, sigma[0], sigma[1], sigma[2]))
+
+##Part 2:
+#define function to calculate intensity after passing through medium at one frequency
+def intensity_one_freq(sigma, I_0, S, n, D):  #takes cross-section, initial intensity, source function, density [cm^-3] and size of region [pc] as inputs
+    ds=np.arange(0,D,0.1)    #steps through medium
+    I_nu=np.zeros(len(ds))  #create array of zeros the same size as the distance array to be filled via radiative transfer equation
+    I_nu[0]=I_0
+    #loop through each distance step and calculate intensity from radiative transfer equation
+    tau=sigma*n*(ds*3.086e+18)    #calculate optical depths at each step from inputs
+    #calculate intensity at each step
+    for i in range(1,len(ds)):
+        I_nu[i]=I_0*np.exp(-tau[i])+S*(1-np.exp(-tau[i]))
+    return I_nu[len(I_nu)-1]
+
+#calculate intensity at s=D
+I_D=intensity_one_freq(3.24e-21, 10, 100, 1, 100)
+print("""Part 2:
+      sigma=3.24e-21 cm^-2, I(0)=10, S_nu=100, n=1cm^-3, D=100pc:
+      I(s=D) = {0}
+      """.format(I_D)
